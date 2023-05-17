@@ -5,19 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
-    android:layout_gravity="center_horizontal"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:paddingVertical="100dp"
+    android:paddingHorizontal="50dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        android:textSize="30sp"
+        android:layout_marginBottom="40dp"/>
+
     <EditText
         android:id="@+id/usernameTxt"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
         android:layout_marginBottom="20dp"/>
 
     <EditText
         android:id="@+id/passwordTxt"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"

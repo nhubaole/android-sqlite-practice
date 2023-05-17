@@ -2,6 +2,8 @@ package com.example.sqlite;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +20,6 @@ public class DetailsActivity extends BaseActivity {
     TextView tvClassId;
     TextView tvClassName;
     TextView tvClassStudents;
-    Button btnBack;
     private List<Student> students;
 
     StudentAdapter studentAdapter;
@@ -37,13 +38,7 @@ public class DetailsActivity extends BaseActivity {
 
         tvClassId.setText(_class.getId());
         tvClassName.setText(_class.getName());
-        btnBack = (Button) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        tvClassStudents.setText(Integer.toString(classRepo.countStudentsByClassID(_class.getId())));
         students = classRepo.getStudentByClassID(_class.getId());
         if(students == null){
             return;
@@ -52,10 +47,25 @@ public class DetailsActivity extends BaseActivity {
         studentAdapter.setOnDeleteButtonClickListener(new StudentAdapter.OnDeleteButtonClickListener() {
             @Override
             public void onBtnClick(Student student) {
-                if(classRepo.deleteStudent(student.get_id())){
-                    studentAdapter.remove(student);
-                    studentAdapter.notifyDataSetChanged();
-                }
+                AlertDialog confirmDialog = new AlertDialog.Builder(DetailsActivity.this)
+                        .setTitle("Xác nhận xóa")
+                        .setMessage("Bạn có chắc chắn muốn xóa sinh viên này?")
+                        .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                if(classRepo.deleteStudent(student.get_id())){
+                                    studentAdapter.remove(student);
+                                    studentAdapter.notifyDataSetChanged();
+                                    tvClassStudents.setText(Integer.toString(classRepo.countStudentsByClassID(_class.getId())));
+                                }
+                            }
+                        })
+                        .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                confirmDialog.show();
             }
         });
         listView.setAdapter(studentAdapter);
